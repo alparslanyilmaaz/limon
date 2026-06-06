@@ -49,6 +49,22 @@ Six built in themes:
 
 <br/>
 
+## How it compares
+
+Postman is a full featured platform with team collaboration, API documentation, mock servers, and more. Limon doesn't try to replace that. It's for developers who want to send HTTP requests without signing in, syncing to the cloud, or waiting for an Electron app to load.
+
+| Feature | Limon | Postman |
+| ------- | ----- | ------- |
+| Local-first storage | ✅ | Partial |
+| No account required | ✅ | Often required |
+| Open source | ✅ | Partial |
+| Lightweight binary (no bundled browser) | ✅ | ❌ |
+| Small footprint | ✅ | ❌ |
+| Team collaboration | ❌ | ✅ |
+| API documentation | ❌ | ✅ |
+| Mock servers | ❌ | ✅ |
+| Large ecosystem & integrations | ❌ | ✅ |
+
 ## What you can do with it
 
 You can organize your requests into organizations and folders, build requests with custom headers, query params, and JSON or raw bodies, and see the full response with status codes, headers, elapsed time, and response size. There is also environment variable support per organization so you can swap base URLs or tokens without editing every request.
