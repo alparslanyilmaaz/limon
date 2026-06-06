@@ -42,11 +42,20 @@ export interface RequestStore {
 	setHeaders: (headers: KeyValuePair[]) => void;
 	setBodyType: (bodyType: BodyType) => void;
 	setBody: (body: string) => void;
-	loadSavedRequest: (request: SavedRequestFull) => void;
+	loadSavedRequest: (request: SavedRequestFull) => Promise<void>;
 	sendRequest: () => Promise<void>;
+	cancelRequest: () => Promise<void>;
 }
 
 const emptyRow = (): KeyValuePair => ({ id: crypto.randomUUID(), key: "", value: "" });
+
+function normalizeUrl(url: string): string {
+	if (!url.trim()) return url;
+	if (!/^[a-zA-Z][a-zA-Z\d+\-.]*:\/\//.test(url)) {
+		return `https://${url}`;
+	}
+	return url;
+}
 
 function normalizeError(raw: string, timeoutMs: number): string {
 	const lower = raw.toLowerCase();
@@ -73,7 +82,10 @@ export const useRequestStore = create<RequestStore>((set, get) => ({
 	error: null,
 	isLoading: false,
 
-	loadSavedRequest: (request) => {
+	loadSavedRequest: async (request) => {
+		if (get().isLoading) {
+			await invoke("cancel_request");
+		}
 		// Parse saved headers
 		let headers: KeyValuePair[] = [];
 		if (request.headers) {
@@ -118,7 +130,7 @@ export const useRequestStore = create<RequestStore>((set, get) => ({
 			const hasBody = bodyType !== "none" && body.trim();
 			const response = await invoke<HttpResponse>("send_request", {
 				method,
-				url: resolve(url),
+				url: normalizeUrl(resolve(url)),
 				headers: activeHeaders,
 				body: hasBody ? resolve(body) : null,
 				timeoutMs: timeout > 0 ? timeout : null,
@@ -137,6 +149,10 @@ export const useRequestStore = create<RequestStore>((set, get) => ({
 		}
 	},
 
+	cancelRequest: async () => {
+		await invoke("cancel_request");
+		set({ isLoading: false });
+	},
 	setMethod: (method) => set({ method }),
 	setUrl: (url) => set((state) => {
 		let newParams: KeyValuePair[] = [];

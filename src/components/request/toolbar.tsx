@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Send, ChevronDown } from "lucide-react";
+import { Send, ChevronDown, X } from "lucide-react";
 import { EnvVarInput } from "../env-var-input";
 import { useRequestStore } from "../../store/request-store";
 import { useSavedRequestStore } from "../../store/saved-request-store";
@@ -19,7 +19,7 @@ const METHOD_COLORS: Record<HttpMethod, string> = {
 };
 
 export const Toolbar = () => {
-	const { method, setMethod, url, setUrl, sendRequest, isLoading } = useRequestStore();
+	const { method, setMethod, url, setUrl, sendRequest, cancelRequest, isLoading } = useRequestStore();
 	const { saveCurrentRequest } = useSavedRequestStore();
 	const { compact } = useThemeStore();
 	const [open, setOpen] = useState(false);
@@ -62,14 +62,24 @@ export const Toolbar = () => {
 				className="w-full text-xs bg-elevated border border-border rounded-lg px-3 py-1.5 text-fg placeholder:text-muted outline-none focus:border-primary transition-colors"
 			/>
 
-			<button
-					disabled={!url.trim() || isLoading}
+			{isLoading ? (
+				<button
+					onClick={cancelRequest}
+					className="flex items-center gap-1.5 px-3 py-1.5 bg-red-500 text-white text-xs font-semibold rounded-lg hover:opacity-90 transition-opacity shrink-0"
+				>
+					<X size={12} />
+					Cancel
+				</button>
+			) : (
+				<button
+					disabled={!url.trim()}
 					onClick={handleSend}
 					className="flex items-center gap-1.5 px-3 py-1.5 bg-primary text-white text-xs font-semibold rounded-lg hover:opacity-90 transition-opacity shrink-0 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:opacity-40"
 				>
-				<Send size={12} />
-				{isLoading ? "Sending..." : "Send"}
-			</button>
+					<Send size={12} />
+					Send
+				</button>
+			)}
 		</div>
 	);
 };

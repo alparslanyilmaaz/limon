@@ -12,7 +12,7 @@ use commands::folder_commands::{create_folder, delete_folder, get_child_folders,
 use commands::organisation_commands::{
     create_organisation, delete_organisation, get_organisations, rename_organisation,
 };
-use commands::request_commands::send_request;
+use commands::request_commands::{cancel_request, send_request};
 use commands::saved_request_commands::{
     create_saved_request, delete_saved_request, get_requests_for_folder, get_saved_request,
     update_saved_request,
@@ -21,6 +21,7 @@ use commands::saved_request_commands::{
 pub struct AppState {
     pub conn: Mutex<rusqlite::Connection>,
     pub http_client: reqwest::Client,
+    pub cancel_tx: Mutex<Option<tokio::sync::oneshot::Sender<()>>>,
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -36,6 +37,7 @@ pub fn run() {
             app.manage(AppState {
                 conn: Mutex::new(conn),
                 http_client: reqwest::Client::new(),
+                cancel_tx: Mutex::new(None),
             });
             Ok(())
         })
@@ -49,6 +51,7 @@ pub fn run() {
             get_child_folders,
             delete_folder,
             send_request,
+            cancel_request,
             create_saved_request,
             get_requests_for_folder,
             get_saved_request,

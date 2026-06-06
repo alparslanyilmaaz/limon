@@ -40,8 +40,16 @@ fn fmt_error(e: reqwest::Error, timeout_ms: Option<u64>) -> String {
 }
 
 #[tauri::command]
+pub async fn cancel_request(state: tauri::State<'_, AppState>) -> Result<(), String> {
+    if let Some(tx) = state.cancel_tx.lock().unwrap().take() {
+        let _ = tx.send(());
+    }
+    Ok(())
+}
+
+#[tauri::command]
 pub async fn send_request(
-    _state: tauri::State<'_, AppState>,
+    state: tauri::State<'_, AppState>,
     method: String,
     url: String,
     headers: Vec<(String, String)>,
@@ -93,28 +101,49 @@ pub async fn send_request(
         req = req.timeout(Duration::from_millis(ms));
     }
 
-    let start = Instant::now();
-    let response = req.send().await.map_err(|e| fmt_error(e, timeout_ms))?;
+    let (tx, rx) = tokio::sync::oneshot::channel::<()>();
+    {
+        let mut guard = state.cancel_tx.lock().unwrap();
+        if let Some(prev) = guard.take() {
+            let _ = prev.send(());
+        }
+        *guard = Some(tx);
+    }
 
-    let status = response.status().as_u16();
-    let resp_headers: Vec<(String, String)> = response
-        .headers()
-        .iter()
-        .map(|(k, v)| (k.to_string(), v.to_str().unwrap_or("").to_string()))
-        .collect();
+    let request_future = async {
+        let start = Instant::now();
+        let response = req.send().await.map_err(|e| fmt_error(e, timeout_ms))?;
 
-    let bytes = response.bytes().await.map_err(|e| fmt_error(e, timeout_ms))?;
-    let elapsed_ms = start.elapsed().as_millis() as u64;
-    let size_bytes = bytes.len();
-    let size_limit = (response_size_limit_mb * 1024 * 1024) as usize;
-    let body_bytes = if bytes.len() > size_limit { bytes.slice(..size_limit) } else { bytes };
-    let body = String::from_utf8_lossy(&body_bytes).into_owned();
+        let status = response.status().as_u16();
+        let resp_headers: Vec<(String, String)> = response
+            .headers()
+            .iter()
+            .map(|(k, v)| (k.to_string(), v.to_str().unwrap_or("").to_string()))
+            .collect();
 
-    Ok(HttpResponse {
-        status,
-        headers: resp_headers,
-        body,
-        elapsed_ms,
-        size_bytes,
-    })
+        let bytes = response.bytes().await.map_err(|e| fmt_error(e, timeout_ms))?;
+        let elapsed_ms = start.elapsed().as_millis() as u64;
+        let size_bytes = bytes.len();
+        let size_limit = (response_size_limit_mb * 1024 * 1024) as usize;
+        let body_bytes = if bytes.len() > size_limit { bytes.slice(..size_limit) } else { bytes };
+        let body = String::from_utf8_lossy(&body_bytes).into_owned();
+
+        Ok::<HttpResponse, String>(HttpResponse {
+            status,
+            headers: resp_headers,
+            body,
+            elapsed_ms,
+            size_bytes,
+        })
+    };
+
+    tokio::select! {
+        result = request_future => {
+            let _ = state.cancel_tx.lock().unwrap().take();
+            result
+        }
+        _ = rx => {
+            Err("Request cancelled".to_string())
+        }
+    }
 }

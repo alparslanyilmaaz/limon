@@ -20,6 +20,14 @@ export const ModalWrapperComponent = ({ children, onOutsideClick, width, noPaddi
 		return () => document.removeEventListener("mousedown", handler);
 	}, [onOutsideClick]);
 
+	useEffect(() => {
+		const handler = (e: KeyboardEvent) => {
+			if (e.key === "Escape") onOutsideClick();
+		};
+		document.addEventListener("keydown", handler);
+		return () => document.removeEventListener("keydown", handler);
+	}, [onOutsideClick]);
+
 	return (
 		<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
 			<div ref={ref} className={`bg-surface rounded-2xl shadow-xl ${width || 'max-w-md w-full'} ${noPadding ? 'overflow-hidden' : 'p-6'}`}>
