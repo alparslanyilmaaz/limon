@@ -1,0 +1,114 @@
+@import "tailwindcss";
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/jetbrains-mono";
+
+/* @theme inline lets Tailwind reference CSS vars at runtime — enables switching */
+@theme inline {
+	--color-bg: var(--bg);
+	--color-surface: var(--surface);
+	--color-elevated: var(--elevated);
+	--color-fg: var(--fg);
+	--color-muted: var(--muted);
+	--color-border: var(--border);
+	--color-border-soft: var(--border-soft);
+	--color-primary: var(--primary);
+	--color-primary-soft: var(--primary-soft);
+}
+
+/* ── Light (default) ──────────────────────────────────────── */
+:root,
+[data-theme="light"] {
+	--bg: #f8fafc;
+	--surface: #ffffff;
+	--elevated: #f1f5f9;
+	--fg: #0f172a;
+	--muted: #64748b;
+	--border: #e2e8f0;
+	--border-soft: #f1f5f9;
+	--primary: #3b82f6;
+	--primary-soft: #dbeafe;
+}
+
+/* ── Dark (GitHub-style) ─────────────────────────────────── */
+[data-theme="dark"] {
+	--bg: #0d1117;
+	--surface: #161b22;
+	--elevated: #21262d;
+	--fg: #e6edf3;
+	--muted: #848d97;
+	--border: #30363d;
+	--border-soft: #21262d;
+	--primary: #388bfd;
+	--primary-soft: #193560;
+}
+
+/* ── Monokai ─────────────────────────────────────────────── */
+[data-theme="monokai"] {
+	--bg: #272822;
+	--surface: #2c2d27;
+	--elevated: #3e3d32;
+	--fg: #f8f8f2;
+	--muted: #75715e;
+	--border: #49483e;
+	--border-soft: #3e3d32;
+	--primary: #66d9e8;
+	--primary-soft: #1c3538;
+}
+
+/* ── Catppuccin Mocha ────────────────────────────────────── */
+[data-theme="catppuccin"] {
+	--bg: #1e1e2e;
+	--surface: #181825;
+	--elevated: #313244;
+	--fg: #cdd6f4;
+	--muted: #6c7086;
+	--border: #45475a;
+	--border-soft: #313244;
+	--primary: #89b4fa;
+	--primary-soft: #1a2952;
+}
+
+/* ── Dracula ─────────────────────────────────────────────── */
+[data-theme="dracula"] {
+	--bg: #282a36;
+	--surface: #21222c;
+	--elevated: #383a4a;
+	--fg: #f8f8f2;
+	--muted: #6272a4;
+	--border: #44475a;
+	--border-soft: #343647;
+	--primary: #bd93f9;
+	--primary-soft: #3d2d5c;
+}
+
+/* ── Solarized Dark ──────────────────────────────────────── */
+[data-theme="solarized"] {
+	--bg: #002b36;
+	--surface: #073642;
+	--elevated: #0d4152;
+	--fg: #839496;
+	--muted: #586e75;
+	--border: #073642;
+	--border-soft: #0d4152;
+	--primary: #268bd2;
+	--primary-soft: #0c2e45;
+}
+
+html, body, #root {
+	height: 100%;
+	overflow: hidden;
+}
+
+body {
+	font-family: "Inter Variable", "Inter", system-ui, sans-serif;
+	font-feature-settings: "cv11", "ss01";
+	-webkit-font-smoothing: antialiased;
+}
+
+code, kbd, pre, .font-mono {
+	font-family: "JetBrains Mono Variable", "JetBrains Mono", ui-monospace, monospace;
+}
+
+button {
+	cursor: pointer;
+}
