@@ -4,6 +4,7 @@ import { SidebarToolbar } from "./toolbar";
 import { FolderModel, useFolderStore } from "../../store/folder-store";
 import { useSavedRequestStore, RequestMinified } from "../../store/saved-request-store";
 import { useThemeStore } from "../../store/theme-store";
+import { ModalWrapperComponent } from "../modals/modal-wrapper";
 
 const METHOD_COLORS: Record<string, string> = {
 	GET: "text-emerald-600",
@@ -125,6 +126,7 @@ const FolderItem = memo(({ folder, orgId, depth = 0 }: { folder: FolderModel; or
 
 	const [isCreatingFolder, setIsCreatingFolder] = useState(false);
 	const [isCreatingRequest, setIsCreatingRequest] = useState(false);
+	const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
 
 	const handleToggle = async () => {
 		const wasExpanded = isExpanded;
@@ -188,7 +190,7 @@ const FolderItem = memo(({ folder, orgId, depth = 0 }: { folder: FolderModel; or
 						<Plus size={11} />
 					</button>
 					<button
-						onClick={(e) => { e.stopPropagation(); deleteFolder(folder.id); }}
+						onClick={(e) => { e.stopPropagation(); setIsConfirmingDelete(true); }}
 						className="p-0.5 rounded hover:bg-fg/10 text-muted hover:text-red-500 transition-colors"
 						title="Delete"
 					>
@@ -225,6 +227,33 @@ const FolderItem = memo(({ folder, orgId, depth = 0 }: { folder: FolderModel; or
 						<RequestItem key={r.id} request={r} depth={depth + 1} />
 					))}
 				</>
+			)}
+
+			{isConfirmingDelete && (
+				<ModalWrapperComponent onOutsideClick={() => setIsConfirmingDelete(false)} width="max-w-sm w-full">
+					<div className="flex flex-col gap-4">
+						<div>
+							<h2 className="text-base font-semibold text-fg mb-1">Delete folder?</h2>
+							<p className="text-sm text-muted">
+								<span className="font-medium text-fg">"{folder.name}"</span> and all its requests will be permanently deleted.
+							</p>
+						</div>
+						<div className="flex justify-end gap-2">
+							<button
+								onClick={() => setIsConfirmingDelete(false)}
+								className="px-4 py-2 rounded-xl text-sm text-muted hover:text-fg hover:bg-elevated transition-colors"
+							>
+								Cancel
+							</button>
+							<button
+								onClick={() => { deleteFolder(folder.id); setIsConfirmingDelete(false); }}
+								className="px-4 py-2 rounded-xl text-sm bg-red-500 text-white hover:bg-red-600 transition-colors"
+							>
+								Delete
+							</button>
+						</div>
+					</div>
+				</ModalWrapperComponent>
 			)}
 		</>
 	);
