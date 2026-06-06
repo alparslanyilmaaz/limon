@@ -48,6 +48,14 @@ export interface RequestStore {
 
 const emptyRow = (): KeyValuePair => ({ id: crypto.randomUUID(), key: "", value: "" });
 
+function normalizeUrl(url: string): string {
+	if (!url.trim()) return url;
+	if (!/^[a-zA-Z][a-zA-Z\d+\-.]*:\/\//.test(url)) {
+		return `https://${url}`;
+	}
+	return url;
+}
+
 function normalizeError(raw: string, timeoutMs: number): string {
 	const lower = raw.toLowerCase();
 	if (lower.includes("timed out") || lower.includes("deadline elapsed")) {
@@ -118,7 +126,7 @@ export const useRequestStore = create<RequestStore>((set, get) => ({
 			const hasBody = bodyType !== "none" && body.trim();
 			const response = await invoke<HttpResponse>("send_request", {
 				method,
-				url: resolve(url),
+				url: normalizeUrl(resolve(url)),
 				headers: activeHeaders,
 				body: hasBody ? resolve(body) : null,
 				timeoutMs: timeout > 0 ? timeout : null,
