@@ -10,9 +10,31 @@ Built with Tauri, React, and Rust. Your requests and data live entirely on your 
 
 <br/>
 
+## Features
+
+You can organize your requests into organizations and folders, build requests with custom headers, query params, and JSON or raw bodies, and see the full response with status codes, headers, elapsed time, and response size. There is also environment variable support per organization so you can swap base URLs or tokens without editing every request.
+
+On top of that you get things like configurable SSL verification, proxy support, redirect control, timeout settings, and a response size limit to handle large payloads gracefully.
+
+## How it compares
+
+Postman is a full-featured platform with team collaboration, API documentation, mock servers, and more. Limon doesn't try to replace that. It's for developers who want to send HTTP requests without signing in, syncing to the cloud, or waiting for an Electron app to load.
+
+| Feature | Limon | Postman |
+| ------- | ----- | ------- |
+| Local-first storage | ✅ | Partial |
+| No account required | ✅ | Often required |
+| Open source | ✅ | Partial |
+| Lightweight binary (no bundled browser) | ✅ | ❌ |
+| Small footprint | ✅ | ❌ |
+| Team collaboration | ❌ | ✅ |
+| API documentation | ❌ | ✅ |
+| Mock servers | ❌ | ✅ |
+| Large ecosystem & integrations | ❌ | ✅ |
+
 ## Themes
 
-Six built in themes:
+Six built-in themes:
 
 <table>
   <tr>
@@ -49,30 +71,6 @@ Six built in themes:
 
 <br/>
 
-## How it compares
-
-Postman is a full featured platform with team collaboration, API documentation, mock servers, and more. Limon doesn't try to replace that. It's for developers who want to send HTTP requests without signing in, syncing to the cloud, or waiting for an Electron app to load.
-
-| Feature | Limon | Postman |
-| ------- | ----- | ------- |
-| Local-first storage | ✅ | Partial |
-| No account required | ✅ | Often required |
-| Open source | ✅ | Partial |
-| Lightweight binary (no bundled browser) | ✅ | ❌ |
-| Small footprint | ✅ | ❌ |
-| Team collaboration | ❌ | ✅ |
-| API documentation | ❌ | ✅ |
-| Mock servers | ❌ | ✅ |
-| Large ecosystem & integrations | ❌ | ✅ |
-
-## What you can do with it
-
-You can organize your requests into organizations and folders, build requests with custom headers, query params, and JSON or raw bodies, and see the full response with status codes, headers, elapsed time, and response size. There is also environment variable support per organization so you can swap base URLs or tokens without editing every request.
-
-On top of that you get things like configurable SSL verification, proxy support, redirect control, timeout settings, and a response size limit to handle large payloads gracefully.
-
-Six built-in themes (Light, Dark, Monokai, Catppuccin Mocha, Dracula, Solarized) and a compact mode are available if you care about that kind of thing.
-
 ## Download
 
 Head over to the [Releases](https://github.com/alparslanyilmaaz/limon/releases) page and grab the installer for your platform.
@@ -85,7 +83,7 @@ Head over to the [Releases](https://github.com/alparslanyilmaaz/limon/releases) 
 
 Just download, install, and open. No account, no cloud sync, no telemetry.
 
-## Running it locally
+## Development
 
 You'll need Node.js (v20+) and Rust installed on your machine. If you don't have Rust yet, the quickest way is:
 
