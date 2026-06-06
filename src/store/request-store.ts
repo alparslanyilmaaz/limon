@@ -42,8 +42,9 @@ export interface RequestStore {
 	setHeaders: (headers: KeyValuePair[]) => void;
 	setBodyType: (bodyType: BodyType) => void;
 	setBody: (body: string) => void;
-	loadSavedRequest: (request: SavedRequestFull) => void;
+	loadSavedRequest: (request: SavedRequestFull) => Promise<void>;
 	sendRequest: () => Promise<void>;
+	cancelRequest: () => Promise<void>;
 }
 
 const emptyRow = (): KeyValuePair => ({ id: crypto.randomUUID(), key: "", value: "" });
@@ -81,7 +82,10 @@ export const useRequestStore = create<RequestStore>((set, get) => ({
 	error: null,
 	isLoading: false,
 
-	loadSavedRequest: (request) => {
+	loadSavedRequest: async (request) => {
+		if (get().isLoading) {
+			await invoke("cancel_request");
+		}
 		// Parse saved headers
 		let headers: KeyValuePair[] = [];
 		if (request.headers) {
@@ -145,6 +149,10 @@ export const useRequestStore = create<RequestStore>((set, get) => ({
 		}
 	},
 
+	cancelRequest: async () => {
+		await invoke("cancel_request");
+		set({ isLoading: false });
+	},
 	setMethod: (method) => set({ method }),
 	setUrl: (url) => set((state) => {
 		let newParams: KeyValuePair[] = [];
