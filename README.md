@@ -6,6 +6,14 @@ Built with Tauri, React, and Rust. Your requests and data live entirely on your 
 
 <br/>
 
+![limon in action](docs/limon.gif)
+
+<br/>
+
+## Themes
+
+Six built in themes:
+
 <table>
   <tr>
     <td align="center">
