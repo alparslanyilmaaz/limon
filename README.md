@@ -4,6 +4,43 @@ A lightweight desktop HTTP client for testing and debugging APIs. Think Postman 
 
 Built with Tauri, React, and Rust. Your requests and data live entirely on your machine, stored in a local SQLite database.
 
+<br/>
+
+<table>
+  <tr>
+    <td align="center">
+      <img src="docs/images/light.png" width="460" alt="Light theme"/>
+      <br/><sub><b>Light</b></sub>
+    </td>
+    <td align="center">
+      <img src="docs/images/dark.png" width="460" alt="Dark theme"/>
+      <br/><sub><b>Dark</b></sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="docs/images/dracula.png" width="460" alt="Dracula theme"/>
+      <br/><sub><b>Dracula</b></sub>
+    </td>
+    <td align="center">
+      <img src="docs/images/catpuccin.png" width="460" alt="Catppuccin theme"/>
+      <br/><sub><b>Catppuccin</b></sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="docs/images/monokai.png" width="460" alt="Monokai theme"/>
+      <br/><sub><b>Monokai</b></sub>
+    </td>
+    <td align="center">
+      <img src="docs/images/solorized.png" width="460" alt="Solarized theme"/>
+      <br/><sub><b>Solarized</b></sub>
+    </td>
+  </tr>
+</table>
+
+<br/>
+
 ## What you can do with it
 
 You can organize your requests into organizations and folders, build requests with custom headers, query params, and JSON or raw bodies, and see the full response with status codes, headers, elapsed time, and response size. There is also environment variable support per organization so you can swap base URLs or tokens without editing every request.
